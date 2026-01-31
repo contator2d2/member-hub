@@ -29,6 +29,7 @@ import InstructorDashboard from "./pages/instructor/InstructorDashboard";
 
 // Student pages
 import StudentDashboard from "./pages/student/StudentDashboard";
+import StudentCourseView from "./pages/student/StudentCourseView";
 
 const queryClient = new QueryClient();
 
@@ -86,7 +87,7 @@ const App = () => (
                 }
               >
                 <Route index element={<StudentDashboard />} />
-                {/* Add more student routes here */}
+                <Route path="courses/:courseId" element={<StudentCourseView />} />
               </Route>
 
               {/* Catch-all */}
