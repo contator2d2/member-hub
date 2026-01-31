@@ -46,9 +46,15 @@ export interface Course {
   instructor?: User;
   status: CourseStatus;
   price: number;
+  originalPrice?: number; // For showing discounts
   duration: number; // in minutes
   rating: number;
   studentsCount: number;
+  // Access control
+  isLocked?: boolean; // User doesn't have access
+  // Upsell/Cross-sell
+  upsellCourseIds?: string[]; // Higher-tier courses to promote
+  crossSellCourseIds?: string[]; // Related courses to recommend
   modulesCount: number;
   lessonsCount: number;
   createdAt: string;
@@ -106,6 +112,7 @@ export interface UpdateModuleData extends Partial<CreateModuleData> {
 
 export type LessonType = 'video' | 'text' | 'quiz' | 'assignment';
 export type VideoProvider = 'youtube' | 'vimeo' | 'upload';
+export type DripType = 'immediate' | 'days_after_enrollment' | 'fixed_date';
 
 export interface Lesson {
   id: string;
@@ -116,6 +123,10 @@ export interface Lesson {
   content: LessonContent;
   order: number;
   duration: number; // in minutes
+  // Drip content settings
+  dripType: DripType;
+  dripDays?: number; // Days after enrollment to unlock
+  dripDate?: string; // Fixed date to unlock (ISO string)
   isFree: boolean;
   createdAt: string;
   updatedAt: string;

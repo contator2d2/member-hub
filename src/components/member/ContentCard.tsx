@@ -1,4 +1,4 @@
-import { Play, Plus, Clock, Star } from "lucide-react";
+import { Play, Plus, Clock, Star, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -10,6 +10,9 @@ interface ContentCardProps {
   rating: number;
   category: string;
   progress?: number;
+  isLocked?: boolean;
+  price?: number;
+  originalPrice?: number;
 }
 
 const ContentCard = ({
@@ -19,6 +22,9 @@ const ContentCard = ({
   rating,
   category,
   progress,
+  isLocked = false,
+  price,
+  originalPrice,
 }: ContentCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -43,14 +49,25 @@ const ContentCard = ({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent opacity-80" />
           
-          {/* Play Button Overlay */}
-          <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
-            isHovered ? "opacity-100" : "opacity-0"
-          }`}>
-            <Button size="icon" className="h-14 w-14 rounded-full shadow-glow">
-              <Play className="h-6 w-6 fill-current" />
-            </Button>
-          </div>
+          {/* Lock Overlay for locked courses */}
+          {isLocked && (
+            <div className="absolute inset-0 bg-background/60 backdrop-blur-sm flex items-center justify-center">
+              <div className="bg-card/90 rounded-full p-4 shadow-lg">
+                <Lock className="h-8 w-8 text-muted-foreground" />
+              </div>
+            </div>
+          )}
+          
+          {/* Play Button Overlay - only show if not locked */}
+          {!isLocked && (
+            <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
+              isHovered ? "opacity-100" : "opacity-0"
+            }`}>
+              <Button size="icon" className="h-14 w-14 rounded-full shadow-glow">
+                <Play className="h-6 w-6 fill-current" />
+              </Button>
+            </div>
+          )}
 
           {/* Progress Bar */}
           {progress !== undefined && progress > 0 && (
@@ -89,17 +106,40 @@ const ContentCard = ({
             </div>
           </div>
 
+          {/* Price for locked courses */}
+          {isLocked && price !== undefined && (
+            <div className="flex items-center gap-2 mt-3">
+              <span className="text-lg font-bold text-primary">
+                R$ {price.toLocaleString()}
+              </span>
+              {originalPrice && originalPrice > price && (
+                <span className="text-sm text-muted-foreground line-through">
+                  R$ {originalPrice.toLocaleString()}
+                </span>
+              )}
+            </div>
+          )}
+
           {/* Hover Actions */}
           <div className={`flex items-center gap-2 mt-3 transition-all duration-300 ${
             isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
           }`}>
-            <Button size="sm" className="flex-1 gap-1">
-              <Play className="h-4 w-4 fill-current" />
-              Assistir
-            </Button>
-            <Button size="sm" variant="secondary">
-              <Plus className="h-4 w-4" />
-            </Button>
+            {isLocked ? (
+              <Button size="sm" className="flex-1 gap-1">
+                <Lock className="h-4 w-4" />
+                Desbloquear
+              </Button>
+            ) : (
+              <>
+                <Button size="sm" className="flex-1 gap-1">
+                  <Play className="h-4 w-4 fill-current" />
+                  Assistir
+                </Button>
+                <Button size="sm" variant="secondary">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
